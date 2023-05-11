@@ -9,6 +9,7 @@ import {
   View,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {useUserContext} from 'src/contexts/UserContext';
 import {getUser} from 'src/lib/users';
 import SignButtons from '../components/SignButtons';
 import SignInForm from '../components/SignForm';
@@ -16,13 +17,14 @@ import {signIn, signUp} from '../lib/auth';
 
 function SignInScreen({navigation, route}) {
   const [loading, setLoading] = useState();
-
+  const {setUser} = useUserContext();
   const {isSignUp} = route.params || {};
   const [form, setForm] = useState({
     email: '',
     password: '',
     confirmPassword: '',
   });
+
   const createChangeTextHandler = name => value => {
     setForm({...form, [name]: value});
   };
@@ -46,7 +48,7 @@ function SignInScreen({navigation, route}) {
       if (!profile) {
         navigation.navigate('Welcome', {uid: user.uid});
       } else {
-        // 구현 예정
+        setUser(profile);
       }
     } catch (e) {
       const messages = {

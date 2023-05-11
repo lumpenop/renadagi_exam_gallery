@@ -1,26 +1,24 @@
-import React, {createContext, useContext} from 'react';
-import {Text} from 'react-native';
+import React, {useContext, createContext, useState} from 'react';
 
 const UserContext = createContext(null);
 
-interface Props {
-  children: JSX.Element;
+export function UserContextProvider({children}) {
+  const [user, setUser] = useState(null);
+  return (
+    <UserContext.Provider
+      children={children}
+      value={{
+        user,
+        setUser,
+      }}
+    />
+  );
 }
 
-export const UserContextProvider: React.FC<Props> = ({children}) => {
-  const [user, setUser] = React.useState(null);
-
-  return (
-    <UserContext.Provider value={{user, setUser}} children={children}>
-      <Text>UserContext hi</Text>
-    </UserContext.Provider>
-  );
-};
-
-export const useUserContext = () => {
+export function useUserContext() {
   const userContext = useContext(UserContext);
   if (!userContext) {
     throw new Error('UserContext.Provider is not found');
   }
   return userContext;
-};
+}
