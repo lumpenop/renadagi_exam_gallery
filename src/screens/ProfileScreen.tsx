@@ -8,8 +8,6 @@ function ProfileScreen() {
   const navigation = useNavigation();
   const {userId, displayName} = route.params ?? {};
 
-  console.log('userid', userId);
-
   useEffect(() => {
     navigation.setOptions({
       title: displayName,

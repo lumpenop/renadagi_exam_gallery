@@ -1,16 +1,21 @@
+import {useNavigation} from '@react-navigation/native';
 import React from 'react';
-import {StyleSheet, View, Text} from 'react-native';
+import {useEffect} from 'react';
 
-const MyProfileScreen = () => {
-  return (
-    <View>
-      <Text>MyProfileScreen hi</Text>
-    </View>
-  );
-};
+import Profile from '../components/Profile';
+import {useUserContext} from '../contexts/UserContext';
 
-const styles = StyleSheet.create({
-  block: {},
-});
+function MyProfileScreen() {
+  const {user} = useUserContext();
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    navigation.setOptions({
+      title: user.displayName,
+    });
+  }, [navigation, user]);
+
+  return <Profile userId={user.id} />;
+}
 
 export default MyProfileScreen;

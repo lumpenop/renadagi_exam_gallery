@@ -10,20 +10,36 @@ import {
 } from 'react-native';
 import Avatar from 'src/components/Avatar';
 import PostGridItem from 'src/components/PostGridItem';
+import {useUserContext} from 'src/contexts/UserContext';
 import usePosts from 'src/hooks/usePosts';
+import events from 'src/lib/events';
+import {removePost} from 'src/lib/posts';
 import {getUser} from '../lib/users';
 
 function Profile({userId}) {
   const {posts, noMorePost, refreshing, onLoadMore, onRefresh} =
     usePosts(userId);
-
   const [user, setUser] = useState(null);
 
+  const {user: me} = useUserContext();
+  const isMyProfile = me.id === userId;
+
   useEffect(() => {
-    console.log(userId, 'user id');
-    console.log(posts, 'posts');
     getUser(userId).then(setUser);
   }, [userId]);
+
+  useEffect(() => {
+    // 자신의 프로필을 보고 있을 때만 새 포스트 작성 후 새로고침을 합니다.
+    if (!isMyProfile) {
+      return;
+    }
+    events.addListener('refresh', onRefresh);
+    events.addListener('removePost', removePost);
+    return () => {
+      events.removeListener('refresh', onRefresh);
+      events.removeListener('removePost', removePost);
+    };
+  }, [removePost, isMyProfile, onRefresh]);
 
   if (!user || !posts) {
     return (

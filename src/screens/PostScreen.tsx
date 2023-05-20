@@ -1,11 +1,23 @@
-import {useRoute} from '@react-navigation/native';
-import React from 'react';
+import {useNavigation, useRoute} from '@react-navigation/native';
+import React, {useEffect} from 'react';
 import {ScrollView, StyleSheet} from 'react-native';
+import events from 'src/lib/events';
 import PostCard from '../components/PostCard';
 
 function PostScreen() {
   const route = useRoute();
+  const navigation = useNavigation();
   const {post} = route.params;
+
+  useEffect(() => {
+    const handler = ({description}) => {
+      navigation.setParams({post: {...post, description}});
+    };
+    events.addListener('updatePost', handler);
+    return () => {
+      events.removeListener('updatePost', handler);
+    };
+  }, [post, navigation]);
   return (
     <ScrollView contentContainerStyle={styles.contentContainer}>
       <PostCard
