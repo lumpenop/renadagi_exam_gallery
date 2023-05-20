@@ -8,6 +8,7 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
+import Avatar from 'src/components/Avatar';
 import {useUserContext} from 'src/contexts/UserContext';
 import {signOut} from '../lib/auth';
 import {createUser} from '../lib/users';
@@ -84,14 +85,7 @@ function SetupProfile() {
   return (
     <View style={styles.block}>
       <Pressable onPress={onSelectImage}>
-        <Image
-          style={styles.circle}
-          source={
-            response
-              ? {uri: response?.assets[0]?.uri}
-              : require('src/assets/img.png')
-          }
-        />
+        <Avatar source={response && {uri: response.uri}} size={128} />
       </Pressable>
       <View style={styles.form}>
         <BorderedInput
